@@ -4,26 +4,22 @@ export const findOptimalPlacement = (container, blocks) => {
   const sorted = blocks.sort((a, b) => b.width * b.height - a.width * a.height);
   const blockCoordinates = [];
 
-  const freeSpace = {
-    x: 0,
-    y: container.height,
+  let freeSpaceX = 0;
+  let freeSpaceY = container.height;
+
+  const updateFreeSpace = (right, top) => {
+    if (right > freeSpaceX) freeSpaceX = right;
+    if (top < freeSpaceY) freeSpaceY = top;
   };
 
-  const updateFreeSpace = (newX, newY) => {
-    if (newX > freeSpace.x) freeSpace.x = newX;
-    if (newY < freeSpace.y) freeSpace.y = newY;
-  };
+  const findSquare = (right, top) => {
+    let x = freeSpaceX;
+    let y = freeSpaceY;
 
-  const findSquare = (x, y) => {
-    const tempFreeSpace = {
-      x: freeSpace.x,
-      y: freeSpace.y,
-    };
+    if (right > x) x = right;
+    if (top < y) y = top;
 
-    if (x > tempFreeSpace.x) tempFreeSpace.x = x;
-    if (y < tempFreeSpace.y) tempFreeSpace.y = y;
-
-    const square = (container.height - tempFreeSpace.y) * tempFreeSpace.x;
+    const square = (container.height - y) * x;
     return square;
   };
 
@@ -97,7 +93,6 @@ export const findOptimalPlacement = (container, blocks) => {
     blockCoordinates.push(bestPosition);
 
     updateFreeSpace(bestPosition.right, bestPosition.top);
-
   });
 
   return {
