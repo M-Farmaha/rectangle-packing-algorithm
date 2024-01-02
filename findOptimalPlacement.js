@@ -5,16 +5,30 @@ export const findOptimalPlacement = (container, blocks) => {
   const blockCoordinates = [];
 
   const freeSpace = {
-    left: 0,
-    down: 0,
-    right: container.width,
-    up: container.height,
+    x: 0,
+    y: container.height,
   };
 
-  const updateFreeSpace = () => {};
+  const updateFreeSpace = (newX, newY) => {
+    if (newX > freeSpace.x) freeSpace.x = newX;
+    if (newY < freeSpace.y) freeSpace.y = newY;
+  };
+
+  const findSquare = (x, y) => {
+    const tempFreeSpace = {
+      x: freeSpace.x,
+      y: freeSpace.y,
+    };
+
+    if (x > tempFreeSpace.x) tempFreeSpace.x = x;
+    if (y < tempFreeSpace.y) tempFreeSpace.y = y;
+
+    const square = (container.height - tempFreeSpace.y) * tempFreeSpace.x;
+    return square;
+  };
 
   sorted.forEach((rec, index) => {
-    const findBestPosition = ({isRotated}) => {
+    const findBestPosition = ({ isRotated }) => {
       let isSuitable = false;
 
       const width = isRotated ? rec.height : rec.width;
@@ -72,11 +86,18 @@ export const findOptimalPlacement = (container, blocks) => {
       return result;
     };
 
-    const normalBlock = findBestPosition({isRotated: false});
+    const normal = findBestPosition({ isRotated: false });
+    const rotated = findBestPosition({ isRotated: true });
 
-    const rotatedBlock = findBestPosition({isRotated: true});
+    const normalSquare = findSquare(normal.right, normal.top);
+    const rotatedSquare = findSquare(rotated.right, rotated.top);
 
-    blockCoordinates.push(rotatedBlock);
+    const bestPosition = normalSquare < rotatedSquare ? normal : rotated;
+
+    blockCoordinates.push(bestPosition);
+
+    updateFreeSpace(bestPosition.right, bestPosition.top);
+
   });
 
   return {
