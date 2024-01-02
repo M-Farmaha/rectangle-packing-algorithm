@@ -8,7 +8,7 @@ const CONTAINER = { width: "100vw", height: "100vh" };
 const BLOCKS = [
   { width: 129, height: 121 },
   { width: 78, height: 69 },
-  { width: 21, height: 207 },
+  { width: 207, height: 21 },
   { width: 18, height: 172 },
   { width: 52, height: 52 },
   { width: 15, height: 145 },
@@ -31,9 +31,12 @@ const updateContainerSize = () => {
   const { clientWidth, clientHeight } = containerElement;
   const container = { width: clientWidth, height: clientHeight };
 
-  const { fullness, blockCoordinates } = findOptimalPlacement(container, BLOCKS);
+  const { fullness, blockCoordinates } = findOptimalPlacement(
+    container,
+    BLOCKS
+  );
 
-  containerElement.innerHTML = '';
+  containerElement.innerHTML = "";
 
   blockCoordinates.forEach((block) => {
     const blockElement = document.createElement("div");
@@ -42,7 +45,10 @@ const updateContainerSize = () => {
     blockElement.style.left = `${block.left}px`;
     blockElement.style.width = `${block.right - block.left}px`;
     blockElement.style.height = `${block.bottom - block.top}px`;
-    blockElement.style.backgroundColor = getRandomColor();
+    blockElement.style.backgroundColor = getRandomColor(
+      blockElement.style.width,
+      blockElement.style.height
+    );
 
     const textElement = document.createElement("p");
     textElement.classList.add("text");
@@ -60,8 +66,4 @@ const updateContainerSize = () => {
 
 updateContainerSize();
 
-
 window.addEventListener("resize", updateContainerSize);
-
-
-
