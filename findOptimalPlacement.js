@@ -40,10 +40,6 @@ export const findOptimalPlacement = (container, blocks) => {
           y -= 1;
           x = 0;
         }
-
-        // if (y + height > container.height) {
-        //   y = container.height - height;
-        // }
       };
 
       const checkSuitability = (block) => {
@@ -78,7 +74,6 @@ export const findOptimalPlacement = (container, blocks) => {
       };
 
       const result = findPlace();
-
       return result;
     };
 

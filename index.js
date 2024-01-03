@@ -5,29 +5,8 @@ import { getRandomColor } from "./getRandomColor.js";
 
 const CONTAINER = { width: "100vw", height: "100vh" };
 
-const BLOCKS = [
-  { width: 129, height: 121 },
-  { width: 78, height: 69 },
-  { width: 207, height: 21 },
-  { width: 18, height: 172 },
-  { width: 52, height: 52 },
-  { width: 15, height: 145 },
-  { width: 26, height: 26 },
-  { width: 26, height: 26 },
-  { width: 23, height: 23 },
-  { width: 23, height: 23 },
-
-  { width: 100, height: 129 },
-  { width: 44, height: 78 },
-  { width: 10, height: 121 },
-  { width: 170, height: 18 },
-  { width: 56, height: 56 },
-  { width: 140, height: 14 },
-  { width: 13, height: 13 },
-  { width: 15, height: 15 },
-  { width: 14, height: 14 },
-  { width: 33, height: 33 },
-];
+const response = await fetch("./rectangles.json");
+const blocks = await response.json();
 
 const bodyElement = document.body;
 const containerElement = document.createElement("div");
@@ -44,7 +23,7 @@ const updateContainerSize = () => {
 
   const { fullness, blockCoordinates } = findOptimalPlacement(
     container,
-    BLOCKS
+    blocks
   );
 
   containerElement.innerHTML = "";
