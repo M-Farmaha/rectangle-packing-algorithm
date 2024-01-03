@@ -16,7 +16,7 @@ const BLOCKS = [
   { width: 26, height: 26 },
   { width: 23, height: 23 },
   { width: 23, height: 23 },
-  
+
   { width: 100, height: 129 },
   { width: 44, height: 78 },
   { width: 10, height: 121 },
@@ -73,6 +73,11 @@ const updateContainerSize = () => {
     blockElement.appendChild(textElement);
     containerElement.appendChild(blockElement);
   });
+
+  const fullnessElement = document.createElement("p");
+  fullnessElement.classList.add("fullness");
+  fullnessElement.textContent = `Useful space coefficient: ${fullness}`;
+  containerElement.appendChild(fullnessElement);
 };
 
 updateContainerSize();

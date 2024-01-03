@@ -95,8 +95,17 @@ export const findOptimalPlacement = (container, blocks) => {
     updateFreeSpace(bestPosition.right, bestPosition.top);
   });
 
+  const filledSquare = findSquare(freeSpaceX, freeSpaceY);
+  const blocksSquare = blockCoordinates.reduce(
+    (acc, block) =>
+      acc + (block.right - block.left) * (block.bottom - block.top),
+    0
+  );
+  const voids = filledSquare - blocksSquare;
+  const fullness = (1 - voids / (voids + blocksSquare)).toFixed(2);
+
   return {
-    fullness: 0,
+    fullness,
     blockCoordinates,
   };
 };

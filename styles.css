@@ -39,26 +39,32 @@ body {
 }
 
 .container {
-  background-color: rgb(189, 196, 224);
+  background-color: var(--primary-color);
   position: relative;
 }
 
 .block {
-  background-color: rgb(94, 104, 148);
+
   position: absolute;
 
   display: flex;
   justify-content: center;
   align-items: center;
 
-  border: 0.5px solid white; 
+  border: 0.5px solid var(--accent-color); 
 }
 
 .text {
   color: var(--accent-color);
-
 }
 
+.fullness {
+ padding: 5px;
+  position: absolute;
+  font-size: 16px;
+
+  color: var(--accent-color);
+}
 
 
 
