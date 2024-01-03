@@ -10,7 +10,7 @@ When changing the viewport, the algorithm automatically calculates the location 
 
 ## How to Use
 
-1. Follow the link or open the `index.html` file in your web browser.
+1. Follow the link [m-farmaha.github.io/tt-rw/](https://m-farmaha.github.io/tt-rw/) or open the `index.html` file in your web browser.
 
 2. Change viewport
 
