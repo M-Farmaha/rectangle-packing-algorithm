@@ -20,7 +20,7 @@ export const findOptimalPlacement = (container, blocks) => {
     if (top < freeSpaceY) freeSpaceY = top;
   };
 
-  const findSquare = (right, top) => {
+  const findFilledSquare = (right, top) => {
     let x = freeSpaceX;
     let y = freeSpaceY;
 
@@ -90,32 +90,85 @@ export const findOptimalPlacement = (container, blocks) => {
     });
 
     areas = areas.filter((_, i) => !indexesToRemove.includes(i));
-    return areas = [...areas, ...newFreeAreas];
+    return (areas = [...areas, ...newFreeAreas]);
   };
 
-  const findEnclosedAreas = (areas, blocks) => {
-    const enclosedAreas = [];
+  const findTouchingAreas = (areas) => {
+    const graph = {};
 
-    areas.forEach((area) => {
-      let isEnclosed = true;
-
-      blocks.forEach((block) => {
+    areas.forEach((area, index) => {
+      graph[index] = [];
+      areas.forEach((otherArea, otherIndex) => {
         if (
-          area.top >= block.top &&
-          area.left >= block.left &&
-          area.right <= block.right &&
-          area.bottom <= block.bottom
+          index !== otherIndex &&
+          ((area.top >= otherArea.top && area.top <= otherArea.bottom) ||
+            (area.bottom >= otherArea.top &&
+              area.bottom <= otherArea.bottom)) &&
+          ((area.left >= otherArea.left && area.left <= otherArea.right) ||
+            (area.right >= otherArea.left && area.right <= otherArea.right))
         ) {
-          isEnclosed = false;
+          graph[index].push(otherIndex);
         }
       });
+    });
 
-      if (isEnclosed) {
-        enclosedAreas.push(area);
+    const visited = new Set();
+    const result = [];
+
+    const dfs = (start, currentSet) => {
+      visited.add(start);
+      currentSet.add(start);
+
+      graph[start].forEach((neighbor) => {
+        if (!visited.has(neighbor)) {
+          dfs(neighbor, currentSet);
+        }
+      });
+    };
+
+    areas.forEach((area, index) => {
+      if (!visited.has(index)) {
+        const currentSet = new Set();
+        dfs(index, currentSet);
+        result.push(Array.from(currentSet));
       }
     });
 
-    return enclosedAreas;
+    return result.map((indices) => indices.map((index) => areas[index]));
+  };
+
+  const findOpenSpace = (touchingAreas) => {
+    if (touchingAreas.length === 0) {
+      return null;
+    }
+
+    let openSpace = touchingAreas[0];
+
+    touchingAreas.forEach((areaArray) => {
+      if (areaArray.length > openSpace.length) {
+        const areaTop = Math.min(...areaArray.map((a) => a.top));
+        const areaRight = Math.max(...areaArray.map((a) => a.right));
+
+        const openSpaceTop = Math.min(...openSpace.map((a) => a.top));
+        const openSpaceRight = Math.max(...openSpace.map((a) => a.right));
+
+        if (
+          areaTop < openSpaceTop ||
+          (areaTop === openSpaceTop && areaRight < openSpaceRight)
+        ) {
+          openSpace = areaArray;
+        }
+      }
+    });
+
+    return openSpace;
+  };
+
+  const findAreaSquare = (area) => {
+    const width = area.right - area.left;
+    const height = area.bottom - area.top;
+
+    return width * height;
   };
 
   sorted.forEach((rec, index) => {
@@ -175,8 +228,8 @@ export const findOptimalPlacement = (container, blocks) => {
     const normal = findBestPosition({ isRotated: false });
     const rotated = findBestPosition({ isRotated: true });
 
-    const normalSquare = findSquare(normal.right, normal.top);
-    const rotatedSquare = findSquare(rotated.right, rotated.top);
+    const normalSquare = findFilledSquare(normal.right, normal.top);
+    const rotatedSquare = findFilledSquare(rotated.right, rotated.top);
 
     const bestPosition = normalSquare < rotatedSquare ? normal : rotated;
 
@@ -185,22 +238,29 @@ export const findOptimalPlacement = (container, blocks) => {
     updateFreeSpace(bestPosition.right, bestPosition.top);
 
     freeAreas = updateFreeAreas(freeAreas, bestPosition);
-
-    
   });
 
-  const enclosedAreas = findEnclosedAreas(freeAreas, blockCoordinates)
-  console.log(freeAreas);
-  console.log(enclosedAreas);
-
-  const filledSquare = findSquare(freeSpaceX, freeSpaceY);
-  const blocksSquare = blockCoordinates.reduce(
-    (acc, block) =>
-      acc + (block.right - block.left) * (block.bottom - block.top),
+  const touchingAreas = findTouchingAreas(freeAreas);
+  const openSpace = findOpenSpace(touchingAreas);
+  const openSpaceSquare = openSpace.reduce(
+    (acc, area) => acc + findAreaSquare(area),
     0
   );
-  const voids = filledSquare - blocksSquare;
-  const fullness = (1 - voids / (voids + blocksSquare)).toFixed(2);
+
+  const blocksSquare = blockCoordinates.reduce(
+    (acc, block) => acc + findAreaSquare(block),
+    0
+  );
+
+  const containerAreaSquare = container.width * container.height;
+
+  const closedSpaceSquare =
+    containerAreaSquare - openSpaceSquare - blocksSquare;
+
+  const fullness = (
+    1 -
+    closedSpaceSquare / (closedSpaceSquare + blocksSquare)
+  ).toFixed(2);
 
   return {
     fullness,
