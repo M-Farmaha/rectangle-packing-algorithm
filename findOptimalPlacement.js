@@ -3,6 +3,14 @@
 export const findOptimalPlacement = (container, blocks) => {
   const sorted = blocks.sort((a, b) => b.width * b.height - a.width * a.height);
   const blockCoordinates = [];
+  let freeAreas = [
+    {
+      top: 0,
+      left: 0,
+      right: container.width,
+      bottom: container.height,
+    },
+  ];
 
   let freeSpaceX = 0;
   let freeSpaceY = container.height;
@@ -21,6 +29,93 @@ export const findOptimalPlacement = (container, blocks) => {
 
     const square = (container.height - y) * x;
     return square;
+  };
+
+  const updateFreeAreas = (areas, block) => {
+    const newFreeAreas = [];
+    const indexesToRemove = [];
+
+    areas.forEach((area, index) => {
+      if (
+        area.left < block.right &&
+        area.right > block.left &&
+        area.top < block.bottom &&
+        area.bottom > block.top
+      ) {
+        const intersection = {
+          top: Math.max(area.top, block.top),
+          left: Math.max(area.left, block.left),
+          right: Math.min(area.right, block.right),
+          bottom: Math.min(area.bottom, block.bottom),
+        };
+
+        if (area.top < intersection.top) {
+          newFreeAreas.push({
+            top: area.top,
+            left: area.left,
+            right: area.right,
+            bottom: intersection.top,
+          });
+        }
+
+        if (area.left < intersection.left) {
+          newFreeAreas.push({
+            top: intersection.top,
+            left: area.left,
+            right: intersection.left,
+            bottom: intersection.bottom,
+          });
+        }
+
+        if (area.right > intersection.right) {
+          newFreeAreas.push({
+            top: intersection.top,
+            left: intersection.right,
+            right: area.right,
+            bottom: intersection.bottom,
+          });
+        }
+
+        if (area.bottom > intersection.bottom) {
+          newFreeAreas.push({
+            top: intersection.bottom,
+            left: area.left,
+            right: area.right,
+            bottom: area.bottom,
+          });
+        }
+
+        indexesToRemove.push(index);
+      }
+    });
+
+    areas = areas.filter((_, i) => !indexesToRemove.includes(i));
+    return areas = [...areas, ...newFreeAreas];
+  };
+
+  const findEnclosedAreas = (areas, blocks) => {
+    const enclosedAreas = [];
+
+    areas.forEach((area) => {
+      let isEnclosed = true;
+
+      blocks.forEach((block) => {
+        if (
+          area.top >= block.top &&
+          area.left >= block.left &&
+          area.right <= block.right &&
+          area.bottom <= block.bottom
+        ) {
+          isEnclosed = false;
+        }
+      });
+
+      if (isEnclosed) {
+        enclosedAreas.push(area);
+      }
+    });
+
+    return enclosedAreas;
   };
 
   sorted.forEach((rec, index) => {
@@ -88,7 +183,15 @@ export const findOptimalPlacement = (container, blocks) => {
     blockCoordinates.push(bestPosition);
 
     updateFreeSpace(bestPosition.right, bestPosition.top);
+
+    freeAreas = updateFreeAreas(freeAreas, bestPosition);
+
+    
   });
+
+  const enclosedAreas = findEnclosedAreas(freeAreas, blockCoordinates)
+  console.log(freeAreas);
+  console.log(enclosedAreas);
 
   const filledSquare = findSquare(freeSpaceX, freeSpaceY);
   const blocksSquare = blockCoordinates.reduce(
