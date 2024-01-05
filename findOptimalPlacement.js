@@ -145,19 +145,17 @@ export const findOptimalPlacement = (container, blocks) => {
     let openSpace = touchingAreas[0];
 
     touchingAreas.forEach((areaArray) => {
-      if (areaArray.length > openSpace.length) {
-        const areaTop = Math.min(...areaArray.map((a) => a.top));
-        const areaRight = Math.max(...areaArray.map((a) => a.right));
+      const areaTop = Math.min(...areaArray.map((a) => a.top));
+      const areaRight = Math.max(...areaArray.map((a) => a.right));
 
-        const openSpaceTop = Math.min(...openSpace.map((a) => a.top));
-        const openSpaceRight = Math.max(...openSpace.map((a) => a.right));
+      const openSpaceTop = Math.min(...openSpace.map((a) => a.top));
+      const openSpaceRight = Math.max(...openSpace.map((a) => a.right));
 
-        if (
-          areaTop < openSpaceTop ||
-          (areaTop === openSpaceTop && areaRight < openSpaceRight)
-        ) {
-          openSpace = areaArray;
-        }
+      if (
+        areaTop < openSpaceTop ||
+        (areaTop === openSpaceTop && areaRight < openSpaceRight)
+      ) {
+        openSpace = areaArray;
       }
     });
 
@@ -256,6 +254,8 @@ export const findOptimalPlacement = (container, blocks) => {
 
   const closedSpaceSquare =
     containerAreaSquare - openSpaceSquare - blocksSquare;
+
+  console.log(closedSpaceSquare);
 
   const fullness = (
     1 -

@@ -5,7 +5,7 @@ import { getRandomColor } from "./getRandomColor.js";
 
 const CONTAINER = { width: "100vw", height: "100vh" };
 
-const response = await fetch("./rectangles-1.json");
+const response = await fetch("./rectangles.json");
 const blocks = await response.json();
 
 const bodyElement = document.body;
