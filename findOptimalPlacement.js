@@ -101,11 +101,12 @@ export const findOptimalPlacement = (container, blocks) => {
       areas.forEach((otherArea, otherIndex) => {
         if (
           index !== otherIndex &&
-          ((area.top >= otherArea.top && area.top <= otherArea.bottom) ||
-            (area.bottom >= otherArea.top &&
-              area.bottom <= otherArea.bottom)) &&
-          ((area.left >= otherArea.left && area.left <= otherArea.right) ||
-            (area.right >= otherArea.left && area.right <= otherArea.right))
+          !(
+            area.right < otherArea.left ||
+            area.left > otherArea.right ||
+            area.bottom < otherArea.top ||
+            area.top > otherArea.bottom
+          )
         ) {
           graph[index].push(otherIndex);
         }
@@ -254,8 +255,6 @@ export const findOptimalPlacement = (container, blocks) => {
 
   const closedSpaceSquare =
     containerAreaSquare - openSpaceSquare - blocksSquare;
-
-  console.log(closedSpaceSquare);
 
   const fullness = (
     1 -
