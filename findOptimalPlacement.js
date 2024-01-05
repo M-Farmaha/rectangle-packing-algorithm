@@ -260,7 +260,7 @@ export const findOptimalPlacement = (container, blocks) => {
   const fullness = (
     1 -
     closedSpaceSquare / (closedSpaceSquare + blocksSquare)
-  ).toFixed(2);
+  ).toFixed(4);
 
   return {
     fullness,
