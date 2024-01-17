@@ -1,16 +1,16 @@
-# Algorithm for efficient placement of rectangular blocks"
+# "Rectangle packing algorithm"
 
-This Algorithm is developed using JavaScript.
+This algorithm is developed using JavaScript.
 
 When changing the viewport, the algorithm automatically calculates the location of the blocks and displays the updated result on the page
 
 ## Review
 
-![Review](/Presentation.jpg)
+![Review](/presentation.gif)
 
 ## How to Use
 
-1. Follow the link [m-farmaha.github.io/tt-rw/](https://m-farmaha.github.io/tt-rw/) or open the `index.html` file in your web browser.
+1. Follow the link [m-farmaha.github.io/rectangle-packing-algorithm/](https://m-farmaha.github.io/rectangle-packing-algorithm/) or open the `index.html` file in your web browser.
 
 2. Change viewport
 
@@ -43,7 +43,7 @@ If you wish to make your own fixes or improvements to the game, you should:
 
 ## Author
 
-The "Algorithm for efficient placement of rectangular blocks" is developed by M-Farmaha in 2024.
+The "Rectangle packing algorithm" is developed by M-Farmaha in 2024.
 
 ## License
 
